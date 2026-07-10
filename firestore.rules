@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function logado() {
+      return request.auth != null;
+    }
+    function meuUsuario() {
+      return get(/databases/$(database)/documents/usuarios/$(request.auth.uid)).data;
+    }
+    function minhaIgreja() {
+      return meuUsuario().igrejaId;
+    }
+    function souAdminOuPastorPresidente() {
+      return meuUsuario().perfil in ['admin_geral', 'pastor_presidente'];
+    }
+    function possoGerenciarMembros() {
+      return meuUsuario().perfil in ['admin_geral', 'pastor_presidente', 'pastor_filial', 'secretario'];
+    }
+
+    // Um usuário só pode ler/editar o próprio documento.
+    // A criação acontece via app.js no primeiro acesso ou por um admin.
+    match /usuarios/{uid} {
+      allow read: if logado() && (request.auth.uid == uid || minhaIgreja() == resource.data.igrejaId);
+      allow create: if logado() && request.auth.uid == uid;
+      allow update, delete: if logado() && souAdminOuPastorPresidente();
+    }
+
+    // Dados da igreja: qualquer usuário vinculado pode ler,
+    // só admin/pastor presidente pode editar.
+    match /igrejas/{igrejaId} {
+      allow read: if logado() && minhaIgreja() == igrejaId;
+      allow create: if logado(); // primeiro acesso
+      allow update: if logado() && minhaIgreja() == igrejaId && souAdminOuPastorPresidente();
+    }
+
+    // Membros: leitura para qualquer perfil da igreja, escrita para
+    // quem tem função de cadastro (admin, pastores, secretário).
+    match /membros/{docId} {
+      allow read: if logado() && minhaIgreja() == resource.data.igrejaId;
+      allow create: if logado() && minhaIgreja() == request.resource.data.igrejaId && possoGerenciarMembros();
+      allow update, delete: if logado() && minhaIgreja() == resource.data.igrejaId && possoGerenciarMembros();
+    }
+
+    // Coleções futuras (filiais, tesouraria, inventário, etc.) seguem o
+    // mesmo princípio: isoladas por igrejaId, com permissões por perfil.
+    // Serão detalhadas em cada módulo correspondente.
+    match /{colecao}/{docId} {
+      allow read: if logado() && minhaIgreja() == resource.data.igrejaId;
+      allow write: if logado() && minhaIgreja() == request.resource.data.igrejaId
+                    && souAdminOuPastorPresidente();
+    }
+  }
+}
