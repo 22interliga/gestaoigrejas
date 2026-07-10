@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gestão de Igrejas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ================= TELA DE LOGIN ================= -->
+<div id="auth-screen" class="auth-screen">
+  <div class="auth-card">
+    <div class="display" style="font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; color:#C9A227;">Painel de Gestão</div>
+    <h1>Entrar</h1>
+    <div class="rule"></div>
+    <div class="subtitle" style="margin-bottom:18px;">Acesse com seu e-mail cadastrado</div>
+
+    <div id="auth-error" class="auth-error"></div>
+
+    <div class="field">
+      <label for="login-email">E-mail</label>
+      <input type="email" id="login-email" placeholder="seuemail@igreja.com">
+    </div>
+    <div class="field">
+      <label for="login-senha">Senha</label>
+      <input type="password" id="login-senha" placeholder="••••••••">
+    </div>
+    <button class="btn btn-primary" id="btn-login" style="width:100%; justify-content:center;">Entrar</button>
+
+    <div style="text-align:center; margin-top:16px;">
+      <a href="#" id="link-primeiro-acesso" style="font-size:0.82rem; color:#47597F; text-decoration:none;">Primeiro acesso? Cadastre sua igreja</a>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CADASTRO INICIAL DA IGREJA ================= -->
+<div id="setup-screen" class="auth-screen hidden">
+  <div class="auth-card" style="max-width:520px;">
+    <div class="display" style="font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; color:#C9A227;">Primeiro acesso</div>
+    <h1>Cadastrar igreja</h1>
+    <div class="rule"></div>
+
+    <div id="setup-error" class="auth-error"></div>
+
+    <div class="field">
+      <label for="setup-igreja-nome">Nome da igreja</label>
+      <input type="text" id="setup-igreja-nome" placeholder="Ex: Igreja Batista Central">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="setup-cnpj">CNPJ (opcional)</label>
+        <input type="text" id="setup-cnpj" placeholder="00.000.000/0000-00">
+      </div>
+      <div class="field">
+        <label for="setup-cidade">Cidade / Estado</label>
+        <input type="text" id="setup-cidade" placeholder="Ex: Salvador / BA">
+      </div>
+    </div>
+    <div class="field">
+      <label for="setup-endereco">Endereço completo</label>
+      <input type="text" id="setup-endereco" placeholder="Rua, número, bairro, CEP">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="setup-whatsapp">WhatsApp</label>
+        <input type="text" id="setup-whatsapp" placeholder="(00) 00000-0000">
+      </div>
+      <div class="field">
+        <label for="setup-pastor">Pastor Presidente</label>
+        <input type="text" id="setup-pastor" placeholder="Nome completo">
+      </div>
+    </div>
+    <hr style="border:none; border-top:1px solid #E4DFD2; margin:18px 0;">
+    <div class="subtitle" style="margin-bottom:10px;">Seu acesso (Administrador Geral)</div>
+    <div class="field">
+      <label for="setup-admin-nome">Seu nome</label>
+      <input type="text" id="setup-admin-nome" placeholder="Nome completo">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label for="setup-admin-email">E-mail</label>
+        <input type="email" id="setup-admin-email" placeholder="voce@igreja.com">
+      </div>
+      <div class="field">
+        <label for="setup-admin-senha">Senha</label>
+        <input type="password" id="setup-admin-senha" placeholder="Mínimo 6 caracteres">
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-setup" style="width:100%; justify-content:center; margin-top:6px;">Criar igreja e acessar</button>
+    <div style="text-align:center; margin-top:14px;">
+      <a href="#" id="link-voltar-login" style="font-size:0.82rem; color:#47597F; text-decoration:none;">Já tenho uma conta</a>
+    </div>
+  </div>
+</div>
+
+<!-- ================= APP PRINCIPAL ================= -->
+<div id="app" class="hidden">
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="igreja-nome" id="sb-igreja-nome">—</div>
+      <div class="igreja-sub" id="sb-perfil">—</div>
+    </div>
+    <div class="nav-item active" data-route="dashboard"><span class="dot"></span> Dashboard</div>
+    <div class="nav-item" data-route="membros"><span class="dot"></span> Membros</div>
+    <div class="nav-item" data-route="filiais"><span class="dot"></span> Filiais</div>
+    <div class="nav-item" data-route="tesouraria"><span class="dot"></span> Tesouraria</div>
+    <div class="nav-item" data-route="inventario"><span class="dot"></span> Inventário</div>
+    <div class="nav-item" data-route="comunicacao"><span class="dot"></span> Comunicação</div>
+    <div class="nav-item" data-route="diretoria"><span class="dot"></span> Diretoria</div>
+    <div class="nav-item" data-route="agenda"><span class="dot"></span> Agenda</div>
+    <div class="nav-item" data-route="relatorios"><span class="dot"></span> Relatórios</div>
+    <div style="flex:1;"></div>
+    <div class="nav-item" id="btn-logout"><span class="dot"></span> Sair</div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <div class="versiculo" id="topbar-versiculo">"O Senhor é o meu pastor; nada me faltará." — Salmos 23:1</div>
+      <div class="user-chip">
+        <div class="avatar" id="user-avatar">?</div>
+        <span id="user-nome">Usuário</span>
+      </div>
+    </div>
+
+    <div id="route-content">
+      <!-- ---------- DASHBOARD ---------- -->
+      <section id="view-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="label">Membros</div><div class="value" id="stat-membros">0</div></div>
+          <div class="stat-card"><div class="label">Congregados</div><div class="value" id="stat-congregados">0</div></div>
+          <div class="stat-card"><div class="label">Visitantes</div><div class="value" id="stat-visitantes">0</div></div>
+          <div class="stat-card"><div class="label">Filiais</div><div class="value" id="stat-filiais">0</div></div>
+          <div class="stat-card"><div class="label">Líderes</div><div class="value" id="stat-lideres">0</div></div>
+        </div>
+
+        <div class="panel-grid-2">
+          <div class="panel">
+            <div class="panel-header"><h2>Financeiro do mês</h2></div>
+            <div class="empty-state" id="fin-empty">
+              <div class="display">Nenhum lançamento ainda</div>
+              <div>O módulo de Tesouraria trará entradas, saídas e gráficos aqui.</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><h2>Aniversariantes de hoje</h2></div>
+            <div class="empty-state" id="aniversariantes-empty">
+              <div class="display">Nenhum aniversariante hoje</div>
+              <div>Assim que o módulo de Membros estiver ativo, eles aparecerão aqui.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2>Dados da igreja</h2></div>
+          <div id="dados-igreja-view"></div>
+        </div>
+      </section>
+
+      <!-- ---------- MEMBROS ---------- -->
+      <section id="view-membros" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Membros</h2>
+            <button class="btn btn-primary" id="btn-novo-membro">+ Novo membro</button>
+          </div>
+
+          <div class="field-row" style="grid-template-columns: repeat(5, 1fr); gap:10px; margin-bottom:16px;">
+            <div class="field" style="margin-bottom:0;">
+              <label>Nome</label>
+              <input type="text" id="f-nome" placeholder="Buscar por nome">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Cargo</label>
+              <input type="text" id="f-cargo" placeholder="Ex: Diácono">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Ministério</label>
+              <input type="text" id="f-ministerio" placeholder="Ex: Louvor">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Filial</label>
+              <input type="text" id="f-filial" placeholder="Ex: Sede">
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label>Cidade</label>
+              <input type="text" id="f-cidade" placeholder="Ex: Salvador">
+            </div>
+          </div>
+          <div style="display:flex; gap:8px; margin-bottom:18px;">
+            <button class="btn btn-ghost" id="btn-buscar-membros">Buscar</button>
+            <button class="btn btn-ghost" id="btn-limpar-busca">Limpar</button>
+          </div>
+
+          <div id="membros-lista"></div>
+        </div>
+      </section>
+
+      <!-- ---------- FORMULÁRIO DE MEMBRO (cadastro/edição) ---------- -->
+      <section id="view-membro-form" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 id="membro-form-titulo">Novo membro</h2>
+            <button class="btn btn-ghost" id="btn-cancelar-membro">Cancelar</button>
+          </div>
+
+          <div class="panel-grid-2">
+            <div>
+              <div class="field-row">
+                <div class="field"><label>Nome completo</label><input type="text" id="m-nome"></div>
+                <div class="field"><label>Situação</label>
+                  <select id="m-situacao">
+                    <option>Ativo</option>
+                    <option>Congregado</option>
+                    <option>Visitante</option>
+                    <option>Afastado</option>
+                    <option>Desligado</option>
+                  </select>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label>CPF</label><input type="text" id="m-cpf"></div>
+                <div class="field"><label>RG</label><input type="text" id="m-rg"></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label>Data de nascimento</label><input type="date" id="m-nascimento"></div>
+                <div class="field"><label>Sexo</label>
+                  <select id="m-sexo"><option>Feminino</option><option>Masculino</option></select>
+                </div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label>Estado civil</label>
+                  <select id="m-estado-civil">
+                    <option>Solteiro(a)</option><option>Casado(a)</option>
+                    <option>Divorciado(a)</option><option>Viúvo(a)</option>
+                  </select>
+                </div>
+                <div class="field"><label>CEP</label><input type="text" id="m-cep"></div>
+              </div>
+              <div class="field"><label>Endereço</label><input type="text" id="m-endereco"></div>
+              <div class="field-row">
+                <div class="field"><label>Bairro</label><input type="text" id="m-bairro"></div>
+                <div class="field"><label>Cidade</label><input type="text" id="m-cidade"></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label>Telefone</label><input type="text" id="m-telefone"></div>
+                <div class="field"><label>WhatsApp</label><input type="text" id="m-whatsapp"></div>
+              </div>
+              <div class="field"><label>E-mail</label><input type="email" id="m-email"></div>
+              <div class="field-row">
+                <div class="field"><label>Data de conversão</label><input type="date" id="m-conversao"></div>
+                <div class="field"><label>Data de batismo</label><input type="date" id="m-batismo"></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label>Cargo na igreja</label><input type="text" id="m-cargo" placeholder="Ex: Diácono, Líder de célula"></div>
+                <div class="field"><label>Ministério</label><input type="text" id="m-ministerio" placeholder="Ex: Louvor, Infantil"></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label>Departamento</label><input type="text" id="m-departamento"></div>
+                <div class="field"><label>Filial</label><input type="text" id="m-filial" placeholder="Ex: Sede"></div>
+              </div>
+              <div class="field"><label>Observações</label><textarea id="m-observacoes" rows="3"></textarea></div>
+            </div>
+
+            <div>
+              <div class="field">
+                <label>Foto</label>
+                <input type="file" id="m-foto-input" accept="image/*">
+                <div style="margin-top:10px;">
+                  <img id="m-foto-preview" src="" alt="" style="width:140px; height:170px; object-fit:cover; border-radius:8px; border:1px solid #E4DFD2; display:none;">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:6px;">
+            <button class="btn btn-primary" id="btn-salvar-membro">Salvar membro</button>
+            <button class="btn btn-ghost" id="btn-cancelar-membro-2">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- FILIAIS ---------- -->
+      <section id="view-filiais" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Filiais</h2>
+            <button class="btn btn-primary" id="btn-nova-filial">+ Nova filial</button>
+          </div>
+          <div id="filiais-lista"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2>Comparativo entre filiais</h2></div>
+          <div id="filiais-comparativo"></div>
+        </div>
+      </section>
+
+      <!-- ---------- FORMULÁRIO DE FILIAL ---------- -->
+      <section id="view-filial-form" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 id="filial-form-titulo">Nova filial</h2>
+            <button class="btn btn-ghost" id="btn-cancelar-filial">Cancelar</button>
+          </div>
+
+          <div class="field-row">
+            <div class="field"><label>Nome da filial</label><input type="text" id="fl-nome" placeholder="Ex: Filial Centro"></div>
+            <div class="field"><label>Pastor responsável</label><input type="text" id="fl-pastor"></div>
+          </div>
+          <div class="field"><label>Endereço</label><input type="text" id="fl-endereco"></div>
+          <div class="field-row">
+            <div class="field"><label>Cidade</label><input type="text" id="fl-cidade"></div>
+            <div class="field"><label>Estado</label><input type="text" id="fl-estado" placeholder="Ex: BA"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Telefone</label><input type="text" id="fl-telefone"></div>
+            <div class="field"><label>WhatsApp</label><input type="text" id="fl-whatsapp"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Tesoureiro</label><input type="text" id="fl-tesoureiro"></div>
+            <div class="field"><label>Secretário</label><input type="text" id="fl-secretario"></div>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:6px;">
+            <button class="btn btn-primary" id="btn-salvar-filial">Salvar filial</button>
+            <button class="btn btn-ghost" id="btn-cancelar-filial-2">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- TESOURARIA ---------- -->
+      <section id="view-tesouraria" class="hidden">
+        <div class="stats-grid">
+          <div class="stat-card"><div class="label">Entradas do mês</div><div class="value" id="tes-total-entradas" style="color:var(--ok-600);">R$ 0</div></div>
+          <div class="stat-card"><div class="label">Saídas do mês</div><div class="value" id="tes-total-saidas" style="color:var(--warn-600);">R$ 0</div></div>
+          <div class="stat-card"><div class="label">Saldo do mês</div><div class="value" id="tes-saldo">R$ 0</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Lançamentos</h2>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <input type="month" id="tes-filtro-mes" style="padding:8px 10px; border:1px solid var(--line); border-radius:6px; background:var(--cream-100);">
+              <button class="btn btn-primary" id="btn-novo-lancamento">+ Novo lançamento</button>
+            </div>
+          </div>
+          <div id="tesouraria-lista"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-header"><h2>Entradas por categoria</h2></div>
+          <div id="tes-grafico-entradas"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-header"><h2>Saídas por categoria</h2></div>
+          <div id="tes-grafico-saidas"></div>
+        </div>
+      </section>
+
+      <!-- ---------- FORMULÁRIO DE LANÇAMENTO ---------- -->
+      <section id="view-lancamento-form" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Novo lançamento</h2>
+            <button class="btn btn-ghost" id="btn-cancelar-lancamento">Cancelar</button>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Tipo</label>
+              <select id="tl-tipo">
+                <option value="entrada">Entrada</option>
+                <option value="saida">Saída</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Categoria</label>
+              <select id="tl-categoria"></select>
+            </div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Valor (R$)</label><input type="number" id="tl-valor" step="0.01" min="0" placeholder="0,00"></div>
+            <div class="field"><label>Data</label><input type="date" id="tl-data"></div>
+          </div>
+          <div class="field"><label>Filial (opcional)</label><input type="text" id="tl-filial" placeholder="Deixe em branco para Sede"></div>
+          <div class="field"><label>Descrição</label><textarea id="tl-descricao" rows="2"></textarea></div>
+
+          <div style="display:flex; gap:10px; margin-top:6px;">
+            <button class="btn btn-primary" id="btn-salvar-lancamento">Salvar lançamento</button>
+            <button class="btn btn-ghost" id="btn-cancelar-lancamento-2">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Placeholder para módulos futuros -->
+      <section id="view-placeholder" class="hidden">
+        <div class="panel">
+          <div class="empty-state">
+            <div class="display" id="placeholder-title">Módulo em construção</div>
+            <div>Este módulo será adicionado em uma próxima etapa.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<!-- Firebase SDK (compat, mais simples para múltiplos arquivos sem bundler) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+<script src="membros.js"></script>
+<script src="filiais.js"></script>
+<script src="tesouraria.js"></script>
+</body>
+</html>
