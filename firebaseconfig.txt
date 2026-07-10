@@ -1,0 +1,16 @@
+// ===================================================================
+// Configuração do Firebase
+// ===================================================================
+
+const firebaseConfig = {
+  apiKey: "AIzaSyArObDknaIsr7jm61OpX0cjffiqchZLMpI",
+  authDomain: "gestao-igrejas-e6c64.firebaseapp.com",
+  projectId: "gestao-igrejas-e6c64",
+  storageBucket: "gestao-igrejas-e6c64.firebasestorage.app",
+  messagingSenderId: "916907160545",
+  appId: "1:916907160545:web:67c26177e461cea514d8a0"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+[  ] const db = firebase.firestore();
