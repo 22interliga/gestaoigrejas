@@ -6,13 +6,15 @@
 <title>Gestão de Igrejas</title>
 <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
 </head>
 <body>
 
 <!-- ================= TELA DE LOGIN ================= -->
 <div id="auth-screen" class="auth-screen">
   <div class="auth-card">
-    <div class="display" style="font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; color:#C9A227;">Painel de Gestão</div>
+    <img data-marca="logo" src="" alt="" style="display:none; max-height:48px; margin-bottom:12px;">
+    <div class="display" style="font-size:0.78rem; letter-spacing:0.1em; text-transform:uppercase; color:#C9A227;" data-marca="nome-sistema">Painel de Gestão</div>
     <h1>Entrar</h1>
     <div class="rule"></div>
     <div class="subtitle" style="margin-bottom:18px;">Acesse com seu e-mail cadastrado</div>
@@ -113,6 +115,7 @@
     <div class="nav-item" data-route="agenda"><span class="dot"></span> Agenda</div>
     <div class="nav-item" data-route="relatorios"><span class="dot"></span> Relatórios</div>
     <div style="flex:1;"></div>
+    <div data-marca="rodape" style="display:none; padding:8px 20px; font-size:0.68rem; color:#7A7660; text-align:center;"></div>
     <div class="nav-item" id="btn-logout"><span class="dot"></span> Sair</div>
   </aside>
 
@@ -136,7 +139,7 @@
           <div class="stat-card"><div class="label">Líderes</div><div class="value" id="stat-lideres">0</div></div>
         </div>
 
-        <div class="panel-grid-2">
+        <div class="panel-grid-3">
           <div class="panel">
             <div class="panel-header"><h2>Financeiro do mês</h2></div>
             <div class="empty-state" id="fin-empty">
@@ -149,6 +152,13 @@
             <div class="empty-state" id="aniversariantes-empty">
               <div class="display">Nenhum aniversariante hoje</div>
               <div>Assim que o módulo de Membros estiver ativo, eles aparecerão aqui.</div>
+            </div>
+          </div>
+          <div class="panel">
+            <div class="panel-header"><h2>Eventos próximos</h2></div>
+            <div class="empty-state" id="eventos-empty">
+              <div class="display">Nenhum evento cadastrado</div>
+              <div>O módulo de Agenda trará os próximos eventos aqui.</div>
             </div>
           </div>
         </div>
@@ -598,6 +608,98 @@
         </div>
       </section>
 
+      <!-- ---------- AGENDA ---------- -->
+      <section id="view-agenda" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <h2>Agenda</h2>
+            <div style="display:flex; gap:10px; align-items:center;">
+              <input type="month" id="ag-filtro-mes" style="padding:8px 10px; border:1px solid var(--line); border-radius:6px; background:var(--cream-100);">
+              <button class="btn btn-primary" id="btn-novo-evento">+ Novo evento</button>
+            </div>
+          </div>
+          <div id="agenda-lista"></div>
+        </div>
+      </section>
+
+      <!-- ---------- FORMULÁRIO DE EVENTO ---------- -->
+      <section id="view-evento-form" class="hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <h2 id="evento-form-titulo">Novo evento</h2>
+            <button class="btn btn-ghost" id="btn-cancelar-evento">Cancelar</button>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Tipo</label>
+              <select id="ev-tipo">
+                <option>Culto</option>
+                <option>Congresso</option>
+                <option>Conferência</option>
+                <option>Ensaio</option>
+                <option>Batismo</option>
+                <option>Santa Ceia</option>
+                <option>Reunião</option>
+                <option>Vigília</option>
+                <option>Evento especial</option>
+              </select>
+            </div>
+            <div class="field"><label>Título</label><input type="text" id="ev-titulo" placeholder="Ex: Culto de celebração"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Data</label><input type="date" id="ev-data"></div>
+            <div class="field"><label>Horário</label><input type="time" id="ev-horario"></div>
+          </div>
+          <div class="field-row">
+            <div class="field"><label>Local</label><input type="text" id="ev-local" placeholder="Ex: Templo Sede"></div>
+            <div class="field"><label>Filial (opcional)</label><input type="text" id="ev-filial"></div>
+          </div>
+          <div class="field"><label>Descrição</label><textarea id="ev-descricao" rows="2"></textarea></div>
+
+          <div style="display:flex; gap:10px; margin-top:6px;">
+            <button class="btn btn-primary" id="btn-salvar-evento">Salvar evento</button>
+            <button class="btn btn-ghost" id="btn-cancelar-evento-2">Cancelar</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- RELATÓRIOS ---------- -->
+      <section id="view-relatorios" class="hidden">
+        <div class="panel">
+          <div class="panel-header"><h2>Gerar relatório</h2></div>
+
+          <div class="field-row">
+            <div class="field">
+              <label>Tipo de relatório</label>
+              <select id="rel-tipo">
+                <option value="membros">Membros</option>
+                <option value="visitantes">Visitantes</option>
+                <option value="congregados">Congregados</option>
+                <option value="batismos">Batismos</option>
+                <option value="aniversariantes">Aniversariantes do mês</option>
+                <option value="filiais">Filiais</option>
+                <option value="diretoria">Diretoria</option>
+                <option value="patrimonio">Patrimônio (Inventário)</option>
+                <option value="eventos">Eventos (Agenda)</option>
+                <option value="financeiro">Financeiro (lançamentos)</option>
+                <option value="tesouraria">Tesouraria (resumo mensal)</option>
+              </select>
+            </div>
+            <div class="field" style="align-self:flex-end;">
+              <button class="btn btn-primary" id="btn-gerar-relatorio" style="width:100%; justify-content:center;">Gerar relatório</button>
+            </div>
+          </div>
+
+          <div id="rel-acoes" style="display:none; gap:10px; margin-bottom:16px;">
+            <button class="btn btn-ghost" id="btn-exportar-pdf">Exportar PDF</button>
+            <button class="btn btn-ghost" id="btn-exportar-excel">Exportar Excel</button>
+          </div>
+
+          <div id="rel-preview"></div>
+        </div>
+      </section>
+
       <!-- Placeholder para módulos futuros -->
       <section id="view-placeholder" class="hidden">
         <div class="panel">
@@ -617,6 +719,8 @@
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script src="firebase-config.js"></script>
 <script src="app.js"></script>
@@ -626,5 +730,7 @@
 <script src="inventario.js"></script>
 <script src="comunicacao.js"></script>
 <script src="diretoria.js"></script>
+<script src="agenda.js"></script>
+<script src="relatorios.js"></script>
 </body>
 </html>
