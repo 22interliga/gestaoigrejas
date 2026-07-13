@@ -195,6 +195,7 @@ function montarApp(usuario, igreja, igrejaId) {
   carregarEstatisticas(igrejaId);
   configurarNavegacao(usuario);
   if (window.TesourariaModule) window.TesourariaModule.atualizarPainelDashboard(igrejaId);
+  if (window.AgendaModule) window.AgendaModule.atualizarPainelDashboard(igrejaId);
 }
 
 function renderDadosIgreja(igreja, usuario) {
@@ -255,9 +256,7 @@ function configurarNavegacao(usuario) {
   const navItems = document.querySelectorAll('.nav-item[data-route]');
   const placeholderTitle = document.getElementById('placeholder-title');
 
-  const rotaLabels = {
-    agenda: 'Agenda', relatorios: 'Relatórios'
-  };
+  const rotaLabels = {};
 
   // Todas as seções de conteúdo conhecidas — a navegação sempre esconde
   // todas e mostra só a da rota clicada.
@@ -291,6 +290,11 @@ function configurarNavegacao(usuario) {
       } else if (rota === 'diretoria') {
         document.getElementById('view-diretoria').classList.remove('hidden');
         if (window.DiretoriaModule) window.DiretoriaModule.abrirLista();
+      } else if (rota === 'agenda') {
+        document.getElementById('view-agenda').classList.remove('hidden');
+        if (window.AgendaModule) window.AgendaModule.abrirLista();
+      } else if (rota === 'relatorios') {
+        document.getElementById('view-relatorios').classList.remove('hidden');
       } else {
         document.getElementById('view-placeholder').classList.remove('hidden');
         placeholderTitle.textContent = `Módulo "${rotaLabels[rota]}" — em construção`;

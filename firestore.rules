@@ -82,8 +82,15 @@ service cloud.firestore {
       allow update, delete: if logado() && minhaIgreja() == resource.data.igrejaId && souAdminOuPastorPresidente();
     }
 
-    // Coleções futuras (agenda, relatórios, etc.) seguem o mesmo
-    // princípio: isoladas por igrejaId, com permissões por perfil.
+    // Agenda: leitura para qualquer perfil da igreja, escrita para quem
+    // organiza a agenda (admin, pastores, secretário).
+    match /agenda/{docId} {
+      allow read: if logado() && minhaIgreja() == resource.data.igrejaId;
+      allow create: if logado() && minhaIgreja() == request.resource.data.igrejaId && possoGerenciarMembros();
+      allow update, delete: if logado() && minhaIgreja() == resource.data.igrejaId && possoGerenciarMembros();
+    }
+
+    // Coleções futuras (relatórios, etc.) seguem o mesmo princípio.
     match /{colecao}/{docId} {
       allow read: if logado() && minhaIgreja() == resource.data.igrejaId;
       allow write: if logado() && minhaIgreja() == request.resource.data.igrejaId

@@ -188,6 +188,7 @@ h1, h2, h3, .display {
 }
 .panel-header h2 { font-size: 1.05rem; }
 .panel-grid-2 { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; }
+.panel-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
 
 /* ---------- Formulários ---------- */
 .field { margin-bottom: 14px; }
@@ -292,6 +293,6 @@ h1, h2, h3, .display {
   .nav-item { border-left: none; border-bottom: 3px solid transparent; white-space: nowrap; }
   .nav-item.active { border-left-color: transparent; border-bottom-color: var(--gold-500); }
   .main { padding: 18px; }
-  .panel-grid-2, .field-row { grid-template-columns: 1fr; }
+  .panel-grid-2, .panel-grid-3, .field-row { grid-template-columns: 1fr; }
   .topbar .versiculo { display: none; }
 }
